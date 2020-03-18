@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate
+class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout
 {
     var lista : AtividadeBanco = AtividadeBanco()
     var answer : AtividadeBanco = AtividadeBanco()
@@ -24,6 +24,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     var totalTime = 0
     
     private var activities = Activity.createActivities()
+    
+    func preferedStatusBarStyle() -> UIStatusBarStyle{
+        return .lightContent
+    }
     
     private struct Storyboard{
         static let CellIdentifier = "Activities Cell"
@@ -47,14 +51,24 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        // Toque na tela
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
-        view.addGestureRecognizer(tap)
-                
+        collectionView.allowsMultipleSelection = true
+        
+        //Toque na tela
+//        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+//
+//        view.addGestureRecognizer(tap)
+//
+//        view.isUserInteractionEnabled = true
+//
+//        collectionView.isUserInteractionEnabled = true
+        
         hoursTextField.addDoneButtonToKeyboard(myAction:  #selector(self.hoursTextField.resignFirstResponder))
         minutesTextField.addDoneButtonToKeyboard(myAction:  #selector(self.minutesTextField.resignFirstResponder))
         
         act = activities[0].name
+        
+        collectionView.allowsMultipleSelection = false
+        collectionView.selectItem(at: NSIndexPath(item: 0, section: 0) as IndexPath, animated: false, scrollPosition: .centeredHorizontally)
         
     }
     
@@ -168,12 +182,67 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Reusable Cell", for: indexPath) as! ActivityCollectionViewCell
         
         cell.activity = self.activities[indexPath.item]
-        act = cell.activity.name
-        
+        cell.alpha = 0.3
+            
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+                
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     
+        let cell = collectionView.cellForItem(at: indexPath) as! ActivityCollectionViewCell
+        
+        cell.backgroundColor = addOrRemoveAct.tintColor
+        cell.backgroundColor?.withAlphaComponent(0.5)
+        
+        act = cell.activityLabel.text!
+        print(act)
+        
+        let index = lista.indexOf(name: act)
+        
+        if index != -1 {
+            addOrRemoveAct.setTitle("Remover Atividade", for: .normal)
+            
+            paintStars(low: (lista.atividades[index].priority >= 1), mid: (lista.atividades[index].priority >= 2), high: (lista.atividades[index].priority >= 3))
+            
+            timeStepper.value = Double(lista.atividades[index].time)
+            defineTime()
+        }
+        else{
+            addOrRemoveAct.setTitle("Adicionar Atividade", for: .normal)
+            
+            paintStars(low: false, mid: false, high: false)
+            
+            timeStepper.value = 0
+            defineTime()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
+        let cell = collectionView.cellForItem(at: indexPath)
+        
+        cell?.backgroundColor = UIColor.clear
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let layout = self.collectionView?.collectionViewLayout as! UICollectionViewFlowLayout
+
+        let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
+
+        var offset = targetContentOffset.pointee
+
+        let index = (offset.x + scrollView.contentInset.left) / cellWidthIncludingSpacing
+
+        let roundedIndex = round(index)
+
+        offset = CGPoint(x: roundedIndex * cellWidthIncludingSpacing - scrollView.contentInset.left, y: -scrollView.contentInset.top)
+
+        targetContentOffset.pointee = offset
+
+    }
+
     func alerta(msg: String){
         let alerta = UIAlertController(title: "Alerta", message: msg, preferredStyle: UIAlertController.Style.alert)
         
