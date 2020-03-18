@@ -8,7 +8,8 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout
+class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout,
+    UITableViewDelegate, UITableViewDataSource
 {
     var lista : AtividadeBanco = AtividadeBanco()
     var answer : AtividadeBanco = AtividadeBanco()
@@ -24,20 +25,31 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     var totalTime = 0
     
     private var activities = Activity.createActivities()
-    
-    func preferedStatusBarStyle() -> UIStatusBarStyle{
-        return .lightContent
-    }
-    
+        
     private struct Storyboard{
         static let CellIdentifier = "Activities Cell"
     }
+    
+    // Outlets
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet var hoursTextField: UITextField!
+    @IBOutlet var minutesTextField: UITextField!
+    @IBOutlet var timeStepper: UIStepper!
+    @IBOutlet var lowPriority: UIButton!
+    @IBOutlet var midPriority: UIButton!
+    @IBOutlet var highPriority: UIButton!
+    @IBOutlet var timeActivity: UILabel!
+    @IBOutlet var addOrRemoveAct: UIButton!
+    @IBOutlet var listView: UIView!
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet var timeList: UILabel!
+    @IBOutlet var editList: UIButton!
+    @IBOutlet var newList: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        // Estrelas de prioridade
         paintStars(low: false, mid: false, high: false)
         
         // Text Fields
@@ -50,17 +62,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         // Collection View
         collectionView.delegate = self
         collectionView.dataSource = self
+
+        // Table View
+        tableView.delegate = self
+        tableView.dataSource = self
         
-        collectionView.allowsMultipleSelection = true
-        
-        //Toque na tela
-//        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
-//
-//        view.addGestureRecognizer(tap)
-//
-//        view.isUserInteractionEnabled = true
-//
-//        collectionView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+
         
         hoursTextField.addDoneButtonToKeyboard(myAction:  #selector(self.hoursTextField.resignFirstResponder))
         minutesTextField.addDoneButtonToKeyboard(myAction:  #selector(self.minutesTextField.resignFirstResponder))
@@ -70,18 +80,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         collectionView.allowsMultipleSelection = false
         collectionView.selectItem(at: NSIndexPath(item: 0, section: 0) as IndexPath, animated: false, scrollPosition: .centeredHorizontally)
         
+        listView.isHidden = true
+        
     }
     
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet var hoursTextField: UITextField!
-    @IBOutlet var minutesTextField: UITextField!
-    @IBOutlet var timeStepper: UIStepper!
-    @IBOutlet var lowPriority: UIButton!
-    @IBOutlet var midPriority: UIButton!
-    @IBOutlet var highPriority: UIButton!
-    @IBOutlet var timeActivity: UILabel!
-    @IBOutlet var addOrRemoveAct: UIButton!
-    
+    // Actions and functios
     @IBAction func minutesTextChanged(_ sender: Any) {
         timeStepper.maximumValue = Double(getFreeTime())
     }
@@ -164,10 +167,28 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         else if(lista.atividades.count > 0){
             knapsackSolution()
             showList()
+            tableView.reloadData()
         }
         else{
             alerta(msg: "Você ainda não adicionou nenhuma atividade!")
         }
+    }
+    
+    @IBAction func editOrNewList(_ sender: UIButton) {
+        
+        if sender == newList{
+            lista.atividades.removeAll()
+            paintStars(low: false, mid: false, high: false)
+            timeStepper.value = 0
+            hoursTextField.text = ""
+            minutesTextField.text = ""
+            addOrRemoveAct.setTitle("Adicionar Atividade", for: .normal)
+            totalTime = 0
+        }
+        
+        defineTime()
+        listView.isHidden = true
+        
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -182,8 +203,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Reusable Cell", for: indexPath) as! ActivityCollectionViewCell
         
         cell.activity = self.activities[indexPath.item]
-        cell.alpha = 0.3
-            
+        cell.backgroundColor = UIColor.clear
+        
         return cell
     }
     
@@ -194,7 +215,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         let cell = collectionView.cellForItem(at: indexPath) as! ActivityCollectionViewCell
         
         cell.backgroundColor = addOrRemoveAct.tintColor
-        cell.backgroundColor?.withAlphaComponent(0.5)
         
         act = cell.activityLabel.text!
         print(act)
@@ -227,6 +247,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
         let layout = self.collectionView?.collectionViewLayout as! UICollectionViewFlowLayout
 
         let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
@@ -243,6 +264,28 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return answer.atividades.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell: UITableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "TableView Cell") ?? UITableViewCell()
+        
+        let timeAct = answer.atividades[indexPath.row].time
+        var time = ""
+        
+        if(timeAct >= 60){
+            time = "\(timeAct/60) h "
+        }
+        
+        time += "\(timeAct % 60) min"
+        
+        cell.textLabel?.text = answer.atividades[indexPath.row].name
+        cell.detailTextLabel?.text = time
+        return cell
+    }
+    
     func alerta(msg: String){
         let alerta = UIAlertController(title: "Alerta", message: msg, preferredStyle: UIAlertController.Style.alert)
         
@@ -321,23 +364,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         answer = res.0
         totalTime = res.1
         
-        print("Minha lista:")
-        
-        for (i, atv) in answer.atividades.enumerated(){
-            print("\(i+1). \(atv.name) - \(atv.time)")
-        }
     }
     
     func showList(){
-        // Borra a tela inicial
-        //        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
-        //        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        //        blurEffectView.frame = view.bounds
-        //        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        //
-        //        view.addSubview(blurEffectView)
-        //
+        listView.isHidden = false
         
+        if(totalTime >= 60){
+            timeList.text = "Tempo Total: \(totalTime/60) h \(totalTime % 60) min"
+        }
+        else{
+            timeList.text = "Tempo Total: \(totalTime % 60) min"
+        }
     }
     
 }

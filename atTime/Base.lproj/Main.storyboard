@@ -233,6 +233,9 @@
                                         <state key="normal" title="Editar Lista" backgroundImage="rectangle.fill" catalog="system">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <connections>
+                                            <action selector="editOrNewList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Rav-k4-wfH"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Spf-Zf-SoN">
                                         <rect key="frame" x="203" y="562" width="198" height="50"/>
@@ -242,6 +245,9 @@
                                         <state key="normal" title="Refazer Lista" backgroundImage="rectangle.fill" catalog="system">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <connections>
+                                            <action selector="editOrNewList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xb5-SA-2XC"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tempo total: 1 h 54 min" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FZA-KN-Hrn">
                                         <rect key="frame" x="0.0" y="468" width="415" height="21"/>
@@ -258,38 +264,38 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3eg-JM-9Zk">
-                                        <rect key="frame" x="87" y="157" width="240" height="200"/>
+                                        <rect key="frame" x="20" y="160" width="381" height="200"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <view key="tableFooterView" contentMode="scaleToFill" id="LwU-wm-HN5">
-                                            <rect key="frame" x="0.0" y="112" width="240" height="44"/>
+                                            <rect key="frame" x="0.0" y="112" width="381" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         </view>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableView Cell" textLabel="FzN-Wk-iBB" detailTextLabel="Wgl-Mj-dyk" imageView="uu7-zy-c2o" style="IBUITableViewCellStyleSubtitle" id="z1t-ph-KQS">
-                                                <rect key="frame" x="0.0" y="28" width="240" height="56"/>
+                                                <rect key="frame" x="0.0" y="28" width="381" height="56"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="z1t-ph-KQS" id="6Ad-qV-YyB">
-                                                    <rect key="frame" x="0.0" y="0.0" width="240" height="56"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="381" height="56"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FzN-Wk-iBB">
-                                                            <rect key="frame" x="55" y="9" width="33.5" height="20.5"/>
+                                                            <rect key="frame" x="59" y="9" width="33.5" height="20.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Wgl-Mj-dyk">
-                                                            <rect key="frame" x="55" y="31.5" width="44" height="14.5"/>
+                                                            <rect key="frame" x="59" y="31.5" width="44" height="14.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="arrow.right.circle.fill" catalog="system" id="uu7-zy-c2o">
-                                                            <rect key="frame" x="18" y="18.5" width="20" height="19"/>
+                                                            <rect key="frame" x="22" y="18.5" width="20" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </imageView>
                                                     </subviews>
@@ -310,12 +316,17 @@
                     <connections>
                         <outlet property="addOrRemoveAct" destination="bZV-wK-sNC" id="q57-nb-UYL"/>
                         <outlet property="collectionView" destination="puW-5Y-3vH" id="Qtw-j2-FhU"/>
+                        <outlet property="editList" destination="Vgt-8a-Ct1" id="aKj-JI-x0H"/>
                         <outlet property="highPriority" destination="2Zz-IF-DdN" id="eiz-Rx-pKN"/>
                         <outlet property="hoursTextField" destination="Spy-KR-xvQ" id="Qke-HS-MZ1"/>
+                        <outlet property="listView" destination="9XV-KN-aPV" id="NoY-hT-yAf"/>
                         <outlet property="lowPriority" destination="iso-xV-bB6" id="HQp-Jb-NnP"/>
                         <outlet property="midPriority" destination="l3d-9g-dQZ" id="E6c-Ql-UDt"/>
                         <outlet property="minutesTextField" destination="HLN-hy-Xge" id="ExG-U0-qWQ"/>
+                        <outlet property="newList" destination="Spf-Zf-SoN" id="Ddq-Vv-X4Z"/>
+                        <outlet property="tableView" destination="3eg-JM-9Zk" id="0oV-vQ-e1e"/>
                         <outlet property="timeActivity" destination="q1N-X8-2jQ" id="cuX-5f-FAW"/>
+                        <outlet property="timeList" destination="FZA-KN-Hrn" id="vE3-y3-iTu"/>
                         <outlet property="timeStepper" destination="4gO-9R-i8C" id="7q8-G9-nMG"/>
                     </connections>
                 </viewController>
